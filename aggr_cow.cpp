@@ -11,13 +11,16 @@ int checkMid(int dist, int n, int c) {
 	int prev = postns[0];
 	for(int i=1;i<n;i++) {
 		if(postns[i] - prev>= dist) {
+			
 			tmp++;
 			if(tmp == c) {
+				cout<<"r1\n";
 				return 1;
 			}
 			prev=postns[i];
 		}
 	}
+	cout<<"r0\n";
 	return 0;
 }
 
@@ -26,7 +29,9 @@ int findMin(int n, int c) {
 	int r=postns[n-1];
 	int mid;
 	while(l <= r) {
+		cout<<"l:"<<l<<" r:"<<r;
 		mid = (l+r)/2;
+		cout<<"m:"<<mid<<"\n";
 		if(checkMid(mid, n,c)) {
 			l = mid+1;
 		} else {

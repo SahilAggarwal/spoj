@@ -1,0 +1,80 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <stdio.h>
+#include <cmath>
+
+using namespace std;
+int n;
+vector<int> a;
+vector<int> tr;
+int q1,q2,tt;
+
+int len;
+int cr_tree(int i,int l, int r) {
+	
+	if(l==r) {
+		tr[i]=a[l];
+		return 0;
+	}
+	int nl = (l+r)/2; int nr = nl+1;
+	cr_tree(2*i+1,l,nl);
+	cr_tree(2*i+2,nr,r);
+	
+	int la=tr[2*i+1];
+	int ra=tr[2*i+2];
+
+	int lsum=-16000,sum=0;
+	for(int j=nl;j>=l;j--){
+		sum+=a[j];
+		if(sum>lsum)
+			lsum=sum;
+	}
+	int rsum=-16000;
+	sum=0;
+	for(int j=nr;j<=r;j++){
+		sum+=a[j];
+		if(sum>rsum)
+			rsum=sum;
+	}
+	int m=lsum+rsum;
+
+	tr[i]=max(la,max(ra,m));
+//	cout<<"\nl:"<<l<<" "<<"r:"<<r<<" "<<"m:"<<m<<" "<<"la:"<<la<<" "<<"ra:"<<ra<<" "<<"tr:"<<tr[i];
+	
+	return 0;
+}
+
+int g_max(int a, int b,int i, int l, int r) {
+	if(b<l || a>r)
+		return -16000;
+	if(a<=l && b>=r)
+		return tr[i];
+	
+	int left = g_max(a,b,2*i+1,l,(l+r)/2);
+	int right = g_max(a,b,2*i+2,(l+r)/2+1,r);
+	return max(left,right);
+}
+
+int main() {
+	scanf("%d",&n);
+	int t=n;
+	while(t--){
+		scanf("%d",&tt);
+		a.push_back(tt);
+	}
+	len = (int) (2 * (pow(2,floor(log(n)/log(2) +1))));
+	tr.assign(len,-16000);
+	cr_tree(0,0,n-1);
+	cout<<"\n";
+	for(int i=0;i<len;i++) {
+		cout<<tr[i]<<" ";
+	}
+	int m;
+        scanf("%d",&m);
+	while(m--) {
+		scanf("%d",&q1);
+		scanf("%d",&q2);
+		printf("%d\n",g_max(q1-1,q2-1,0,0,n-1));
+	}
+}
